@@ -1,0 +1,12 @@
+/* CSS for Navbar.tsx */
+
+.navbar {
+  background-color: #1f2937; /* bg-gray-800 */
+  color: #ffffff; /* text-white */
+  padding: 0.5rem 1rem; /* px-4 py-2 */
+}
+
+.navbar-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+}

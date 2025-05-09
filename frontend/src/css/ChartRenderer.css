@@ -1,0 +1,19 @@
+/* CSS for ChartRenderer.tsx */
+
+/* Example: Styles for a container if you wrap the SVG */
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e5e7eb; /* Example border (gray-200) */
+  border-radius: 0.375rem; /* Example rounded-md */
+}
+
+/* Styles for the SVG itself, if not handled by D3 */
+svg.chart-renderer-svg {
+  /* Add any default styles for the SVG element if needed */
+  /* For example, a background or default font if D3 doesn't set it. */
+  display: block; /* Often useful for SVGs */
+  margin: auto;   /* To center it if it has a fixed width */
+}

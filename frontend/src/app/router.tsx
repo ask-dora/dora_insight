@@ -1,9 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Integrations from './pages/Integrations';
+import Login from './routes/Login';
+import Dashboard from './routes/Dashboard';
+import Integrations from './routes/Integrations';
 
-export default function App() {
+export default function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
@@ -13,5 +13,3 @@ export default function App() {
     </Routes>
   );
 }
-
-export { App };

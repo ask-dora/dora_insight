@@ -1,0 +1,289 @@
+/* CSS for Login.tsx */
+
+/* Main Page Container */
+.login-page-container {
+  min-height: 100vh;
+  display: flex;
+  background-color: #f9fafb; /* Tailwind: bg-gray-50 */
+}
+
+/* Form Panel (Left Side) */
+.form-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem; /* Tailwind: p-6 */
+  background-color: #ffffff; /* Tailwind: bg-white */
+  position: relative;
+}
+
+@media (min-width: 768px) { /* Tailwind: md: */
+  .form-panel {
+    width: 50%; /* Tailwind: md:w-1/2 */
+    padding: 3rem; /* Tailwind: sm:p-12, using for md breakpoint */
+  }
+}
+
+.logo-container {
+  position: absolute;
+  top: 2rem; /* Tailwind: top-8 */
+  left: 2rem; /* Tailwind: left-8 */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Tailwind: space-x-2 */
+}
+
+.logo-icon {
+  width: 1.75rem; /* Tailwind: w-7 */
+  height: 1.75rem; /* Tailwind: h-7 */
+  background-color: #4f46e5; /* Tailwind: bg-indigo-600 */
+  border-radius: 0.25rem; /* Tailwind: rounded */
+}
+
+.logo-text {
+  font-size: 1.25rem; /* Tailwind: text-xl */
+  font-weight: 600; /* Tailwind: font-semibold */
+  color: #111827; /* Tailwind: text-gray-900 */
+}
+
+.form-content-wrapper { /* Wrapper for max-width and margins */
+  width: 100%;
+  max-width: 28rem; /* Tailwind: max-w-md */
+  margin-top: 4rem; /* Tailwind: mt-16 */
+}
+
+@media (min-width: 768px) { /* Tailwind: md: */
+  .form-content-wrapper {
+    margin-top: 0; /* Tailwind: md:mt-0 */
+  }
+}
+
+.form-title {
+  font-size: 1.5rem; /* Tailwind: text-2xl */
+  font-weight: 700; /* Tailwind: font-bold */
+  color: #111827; /* Tailwind: text-gray-900 */
+  margin-bottom: 0.25rem; /* Tailwind: mb-1 */
+}
+
+.form-subtitle {
+  font-size: 0.875rem; /* Tailwind: text-sm */
+  color: #4b5563; /* Tailwind: text-gray-600 */
+  margin-bottom: 1.5rem; /* Tailwind: mb-6 */
+}
+
+/* Common Form Elements */
+.error-message {
+  background-color: #fee2e2; /* Tailwind: bg-red-100 */
+  color: #b91c1c; /* Tailwind: text-red-700 */
+  padding: 0.75rem; /* Tailwind: p-3 */
+  border-radius: 0.375rem; /* Tailwind: rounded */
+  margin-bottom: 1rem; /* Tailwind: mb-4 */
+  font-size: 0.875rem; /* Tailwind: text-sm */
+  text-align: center;
+}
+
+.message-text {
+  background-color: #d1fae5; /* Tailwind: bg-green-100 */
+  color: #047857; /* Tailwind: text-green-700 */
+  padding: 0.75rem; /* Tailwind: p-3 */
+  border-radius: 0.375rem; /* Tailwind: rounded */
+  margin-bottom: 1rem; /* Tailwind: mb-4 */
+  font-size: 0.875rem; /* Tailwind: text-sm */
+  text-align: center;
+}
+
+/* Styles for the <form> element itself and its direct children for spacing (Tailwind space-y-6) */
+.form-main > div {
+    margin-bottom: 1.5rem;
+}
+.form-main > div:last-child {
+    margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem; /* Tailwind: text-sm */
+  font-weight: 500; /* Tailwind: font-medium */
+  color: #374151; /* Tailwind: text-gray-700 */
+  margin-bottom: 0.25rem; /* Spacing for the input below */
+}
+
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem; /* Tailwind: px-3 py-2 */
+  border: 1px solid #d1d5db; /* Tailwind: border border-gray-300 */
+  border-radius: 0.375rem; /* Tailwind: rounded-md */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Tailwind: shadow-sm */
+  font-size: 0.875rem; /* Tailwind: sm:text-sm */
+}
+
+.input-field:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: #4f46e5; /* Tailwind: focus:border-indigo-500 */
+  box-shadow: 0 0 0 1px #4f46e5; /* Tailwind: focus:ring-indigo-500 (approximated) */
+}
+
+.checkbox-section { /* Container for forgot password link */
+  display: flex;
+  justify-content: flex-end; /* Align content (forgot password button) to the right */
+  /* items-center might not be needed if only one item and it's text based */
+}
+
+/* .checkbox-label-group and .checkbox and .checkbox-text-label can be removed if no longer used elsewhere, 
+   or kept if there are other checkboxes in the application using these styles. 
+   For now, assuming they are specific to the removed "Remember me" feature. */
+
+.forgot-password-container { 
+   font-size: 0.875rem; /* Tailwind: text-sm */
+   /* width: 100%; /* No longer needed if checkbox-section handles alignment */
+   /* text-align: right; /* No longer needed if checkbox-section handles alignment */
+}
+
+.forgot-password-button {
+  font-weight: 500; /* Tailwind: font-medium */
+  color: #4f46e5; /* Tailwind: text-indigo-600 */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.forgot-password-button:hover {
+  color: #4338ca; /* Tailwind: hover:text-indigo-500 */
+}
+
+.submit-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0.625rem 1rem; /* Tailwind: py-2.5 px-4 */
+  border: 1px solid transparent;
+  border-radius: 0.375rem; /* Tailwind: rounded-md */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Tailwind: shadow-sm */
+  font-size: 0.875rem; /* Tailwind: text-sm */
+  font-weight: 500; /* Tailwind: font-medium */
+  color: #ffffff; /* Tailwind: text-white */
+  background-color: #4f46e5; /* Tailwind: bg-indigo-600 */
+  cursor: pointer;
+}
+.submit-button:hover {
+  background-color: #4338ca; /* Tailwind: hover:bg-indigo-700 */
+}
+.submit-button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #4f46e5; /* Tailwind: focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 (approximated) */
+}
+
+/* "Or" Divider */
+.divider-container {
+  margin-top: 1.5rem; /* Tailwind: mt-6 */
+}
+.divider-relative {
+  position: relative;
+}
+.divider-absolute-center { /* Tailwind: absolute inset-0 flex items-center */
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+}
+.divider-line { /* Tailwind: w-full border-t border-gray-300 */
+  width: 100%;
+  border-top: 1px solid #d1d5db;
+}
+.divider-text-wrapper { /* Tailwind: relative flex justify-center text-sm */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  font-size: 0.875rem; /* Tailwind: text-sm */
+}
+.divider-text { /* Tailwind: px-2 bg-white text-gray-500 */
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  background-color: #ffffff;
+  color: #6b7280;
+}
+
+/* Google Sign In Button */
+.google-signin-button-container {
+  margin-top: 1.5rem; /* Consistent with divider spacing */
+}
+
+.google-signin-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1rem; /* py-2.5 px-4, consistent with submit-button */
+  border: 1px solid #d1d5db; /* border-gray-300 */
+  border-radius: 0.375rem; /* rounded-md */
+  background-color: #ffffff; /* bg-white */
+  color: #374151; /* text-gray-700 */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.google-signin-button:hover {
+  background-color: #f9fafb; /* bg-gray-50 */
+}
+
+.google-signin-button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: #4f46e5; /* focus:border-indigo-500 */
+  box-shadow: 0 0 0 1px #4f46e5, 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* focus:ring-indigo-500 and shadow-sm */
+}
+
+.google-signin-button svg { /* Style for the GoogleLogo SVG if needed */
+  margin-right: 0.5rem; /* Tailwind: mr-2 (0.5rem) - already in inline style in component, but good to have a class too */
+}
+
+
+/* Toggle Sign Up/Sign In */
+.toggle-auth-container { /* Tailwind: mt-8 text-center text-sm text-gray-600 */
+  margin-top: 2rem; /* Tailwind: mt-8 */
+  text-align: center;
+  font-size: 0.875rem; /* Tailwind: text-sm */
+  color: #4b5563; /* Tailwind: text-gray-600 */
+}
+.toggle-auth-button { /* Tailwind: font-medium text-indigo-600 hover:text-indigo-500 */
+  font-weight: 500;
+  color: #4f46e5;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.toggle-auth-button:hover {
+  color: #4338ca;
+}
+
+/* Right Side: Image Panel - CSS will hide/show based on media queries if used */
+/* Example if an image panel is added, matching the structure in Login.tsx comments */
+ .image-panel {
+   display: none; /* Hidden by default, shown on larger screens */
+ }
+
+ @media (min-width: 768px) { /* md breakpoint */
+   .image-panel {
+     display: flex; /* Or block, depending on content */
+     width: 50%;    /* md:w-1/2 */
+     align-items: center;
+     justify-content: center;
+     /* background-color: #E9E6FF; Example background */
+   }
+ }
+
+ .illustration-image {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+ }

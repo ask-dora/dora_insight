@@ -1,0 +1,12 @@
+/* CSS for Dashboard.tsx */
+
+.dashboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 1rem; /* p-4 */
+}

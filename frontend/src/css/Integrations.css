@@ -1,0 +1,12 @@
+/* CSS for Integrations.tsx */
+
+.integrations-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.integrations-main {
+  flex: 1;
+  padding: 1rem; /* p-4 */
+}
