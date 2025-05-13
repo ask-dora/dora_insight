@@ -1,10 +1,41 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Reset or base styles - adjust as needed */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #F9FAFB; /* Default text color */
 }
 
+.app-container {
+  display: flex;
+  height: 100vh; /* Full viewport height */
+  background-color: rgba(31, 41, 55, 0.4); /* #1F2937 with 40% transparency */
+}
+
+.main-content {
+  flex-grow: 1; /* Takes up remaining space */
+  overflow-y: auto; /* Allows content to scroll */
+  transition: margin-left 0.3s ease;
+  padding: 0; /* Remove default padding if any */
+  height: 100vh; /* Ensure main content can also be full height */
+  box-sizing: border-box;
+  /* Ensure main-content does not have its own background, it's transparent to .app-container */
+}
+
+.main-content.sidebar-present {
+  margin-left: 250px; /* Fixed margin when sidebar is present */
+}
+
+.page-content-area {
+  background-color: #ffffff; /* Specified background for content sections */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Keep other styles like .logo, .card etc. if they are still used elsewhere or remove them */
 .logo {
   height: 6em;
   padding: 1.5em;

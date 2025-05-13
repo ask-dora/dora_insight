@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import '../css/PromptInput.css'; // Import the CSS file
 
 export default function PromptInput() {
@@ -10,20 +12,22 @@ export default function PromptInput() {
   };
 
   return (
-    <div className="prompt-input-container"> {/* Replaced mb-4 */}
-      <input
-        type="text"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Describe the chart you want..."
-        className="prompt-input-field" /* Replaced w-full border px-4 py-2 rounded-md */
-      />
-      <button
-        className="prompt-submit-button" /* Replaced mt-2 bg-blue-500 text-white px-4 py-2 rounded-md */
-        onClick={handleSubmit}
-      >
-        Generate Chart
-      </button>
+    <div className="prompt-input-container">
+      <div className="prompt-input-bar"> {/* Added wrapper for input and button */}
+        <input
+          type="text"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Enter your prompt here.." /* Changed placeholder */
+          className="prompt-input-field"
+        />
+        <button
+          className="prompt-submit-button"
+          onClick={handleSubmit}
+        >
+          <FontAwesomeIcon icon={faPaperPlane} /> {/* Changed to icon */}
+        </button>
+      </div>
     </div>
   );
 }

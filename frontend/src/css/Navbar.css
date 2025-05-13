@@ -1,12 +1,22 @@
 /* CSS for Navbar.tsx */
 
 .navbar {
-  background-color: #1f2937; /* bg-gray-800 */
-  color: #ffffff; /* text-white */
-  padding: 0.5rem 1rem; /* px-4 py-2 */
+  background-color: rgba(31, 41, 55, 0.6); /* #1F2937 with 60% opacity (40% transparency) */
+  color: #F9FAFB; /* Updated text color */
+  padding: 0.75rem 1.5rem; /* Adjusted padding */
+  display: flex;
+  align-items: center; /* Vertically align items */
+  justify-content: flex-start; /* Align title to the left */
+  height: 60px; /* Example fixed height */
+  box-sizing: border-box;
 }
 
 .navbar-title {
-  font-size: 1.25rem; /* text-xl */
+  font-size: 1.5rem; /* Adjusted font size */
   font-weight: 600; /* font-semibold */
+  margin: 0; /* Remove default margin */
+  color: #F9FAFB; /* Ensure title color is set */
 }
+
+/* Removed .user-section, .user-info-button, .dropdown-arrow, .logout-menu, .logout-menu-item styles */
+/* as they are moving to Sidebar.css */

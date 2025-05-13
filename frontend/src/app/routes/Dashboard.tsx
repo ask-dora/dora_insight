@@ -8,9 +8,11 @@ export default function Dashboard() {
     <div className="dashboard-container">
       <Navbar />
       <main className="dashboard-main">
-        <PromptInput />
         <ChartRenderer />
       </main>
+      <div className="prompt-input-wrapper"> {/* Wrapper for PromptInput */}
+        <PromptInput />
+      </div>
     </div>
   );
 }

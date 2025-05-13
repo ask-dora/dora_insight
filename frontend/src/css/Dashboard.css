@@ -1,12 +1,22 @@
 /* CSS for Dashboard.tsx */
 
 .dashboard-container {
-  height: 100vh;
+  min-height: 100vh; /* Changed from height to min-height to allow content to expand if needed */
   display: flex;
   flex-direction: column;
 }
 
 .dashboard-main {
-  flex: 1;
+  flex: 1; /* Takes up available space */
   padding: 1rem; /* p-4 */
+  overflow-y: auto; /* Add scroll for main content if it overflows */
+  display: flex; /* Optional: if you want to center ChartRenderer or manage its layout further */
+  flex-direction: column; /* Optional: aligns children (ChartRenderer) in a column */
+  align-items: center; /* Optional: centers ChartRenderer if it's narrower than main */
+}
+
+.prompt-input-wrapper {
+  padding: 1rem; /* Spacing around the prompt input section */
+  /* This wrapper will be at the bottom due to flex-direction: column on parent */
+  /* Centering of the PromptInput component itself is handled in PromptInput.css */
 }

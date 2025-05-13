@@ -1,0 +1,167 @@
+.sidebar {
+  height: 100vh; /* Full viewport height */
+  background-color: #061440; /* Updated to solid color */
+  color: #D9E2E2; /* Updated text/icon color */
+  padding-top: 1rem;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes user profile to bottom */
+  position: fixed; /* Keep sidebar fixed */
+  top: 0;
+  left: 0;
+  z-index: 0; /* Ensure it's above other content but below modals if any */
+  box-sizing: border-box;
+  opacity: 0.99;
+  width: 250px; /* Fixed width as it's no longer collapsible */
+}
+
+/* Removed .sidebar.collapsed styles */
+
+/* Removed .sidebar-toggle styles */
+
+.sidebar-title-container {
+  padding: 0 1rem; /* Match nav-item horizontal padding */
+  margin-bottom: 2rem; /* Increased space below title */
+  text-align: center;
+}
+
+/* .sidebar-title-underline { ... } */ /* Removed underline styles */
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #D9E2E2; /* Updated text/icon color */
+  text-decoration: none;
+  border-radius: 0.375rem; /* rounded-md */
+  margin: 0.25rem 0.5rem; /* Some spacing around items */
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide text that overflows when collapsing */
+}
+
+.nav-item:hover {
+  background-color: rgba(31, 41, 55, 0.1); /* Lighter background for nav item hover */
+  /* color: #ffffff; /* white */ /* Keep text color #1F2937 */
+}
+
+.nav-item.active {
+  background-color: #D9E2E2; /* Active item highlight */
+  color: #1E40AF; /* White text for active item for contrast */
+  font-weight: 500;
+}
+
+.nav-item.active .nav-icon {
+    color: #1E40AF; /* White icon for active item */ 
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  min-width: 30px; /* Ensure icon has space */
+  text-align: center;
+  transition: color 0.2s ease-in-out; /* Smooth transition for hover */
+}
+
+.nav-icon:hover {
+  color: #F9FAFB; /* Icon highlight color on direct hover (if applicable) */
+}
+
+.sidebar.expanded .nav-icon {
+  margin-right: 0.75rem;
+}
+
+.nav-text {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.sidebar.collapsed .nav-text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  display: none; /* Effectively hide and remove from layout */
+}
+
+/* User Profile Section at the bottom */
+.sidebar-user-profile {
+  padding: 0.5rem;
+  /* border-top: 1px solid #374151; Removed separator line */
+}
+
+.user-profile-button {
+  background: none;
+  border: none;
+  color: #F9FAFB; /* Updated text/icon color */
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  border-radius: 0.375rem;
+}
+
+.user-profile-button.collapsed {
+  justify-content: center;
+}
+
+.user-profile-button:hover {
+  background-color: rgba(31, 41, 55, 0.1); /* Lighter background for hover */
+  /* color: #ffffff; */ /* Keep text color #1F2937 */
+}
+
+.user-profile-button:hover .user-icon,
+.user-profile-button:hover .user-name,
+.user-profile-button:hover .dropdown-arrow {
+  color: #F9FAFB; /* Highlight color for icon and text on hover */
+}
+
+.sidebar.expanded .user-profile-button .user-icon {
+  margin-right: 0.75rem;
+}
+
+.user-profile-button .user-name {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-profile-button .dropdown-arrow {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+}
+
+.sidebar-logout-menu {
+  /* Positioned relative to the button or sidebar bottom part */
+  background-color: #1f2937; /* Slightly lighter than sidebar, but still dark */
+  border-radius: 0.375rem; /* rounded-md */
+  margin-top: 0.25rem;
+  padding: 0.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.sidebar-logout-item {
+  background: none;
+  border: none;
+  color: #F9FAFB; /* Updated text/icon color */
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  display: block;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.sidebar-logout-item:hover {
+  background-color: rgba(31, 41, 55, 0.15); /* Lighter background for hover */
+  color: #F9FAFB; /* Highlight color for text on hover */
+}
