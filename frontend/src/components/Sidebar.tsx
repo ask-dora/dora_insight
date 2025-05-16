@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faComments, faAtom, faGear, faCircleInfo,
-  faUser
+  faComments, faAtom, faGear, faCircleInfo, faUser,
+  faChartBar // Added faChartBar
 } from '@fortawesome/free-solid-svg-icons';
 import { auth } from '../firebase/firebaseConfig';
 import { signOut, onAuthStateChanged, type User } from 'firebase/auth';
@@ -46,9 +46,18 @@ const Sidebar: React.FC = () => {
         <nav className="sidebar-nav">
           <ul>
             <li>
-              <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+              {/* <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> */}
+              <NavLink to="/chat" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <FontAwesomeIcon icon={faComments} className="nav-icon" />
-                <span className="nav-text">Chat / Dashboard</span> {/* Always show text */}
+                {/* <span className="nav-text">Chat / Dashboard</span> */}
+                <span className="nav-text">Chat</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                {/* Placeholder for a new icon, using faComments for now */}
+                <FontAwesomeIcon icon={faChartBar} className="nav-icon" /> {/* Changed icon */}
+                <span className="nav-text">Dashboard</span>
               </NavLink>
             </li>
             <li>

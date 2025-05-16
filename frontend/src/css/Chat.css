@@ -1,0 +1,159 @@
+/* CSS for Chat.tsx */ /* Updated comment */
+
+.chat-container { /* Changed from .dashboard-container to .chat-container */
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
+  background-color: rgba(31, 41, 55, 0.4); /* App BG */
+  color: #F9FAFB; /* Text color */
+  font-family: 'Roboto', sans-serif;
+}
+
+.chat-main { /* Changed from .dashboard-main to .chat-main */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden; /* Prevent double scrollbar, message-list will scroll */
+  padding: 20px;
+  background-color: #FFFFFF; /* Page Content BG - Changed to white */
+}
+
+.message-list {
+  flex-grow: 1;
+  overflow-y: auto; /* Allow scrolling for messages */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Space between messages */
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-end; /* Align avatar and bubble nicely */
+  max-width: 75%; /* Prevent messages from taking full width */
+}
+
+.message-user {
+  align-self: flex-end; /* User messages to the right */
+  flex-direction: row-reverse; /* Avatar on the right */
+}
+
+.message-llm {
+  align-self: flex-start; /* LLM messages to the left */
+  flex-direction: row;
+}
+
+.message-system {
+  align-self: center;
+  max-width: 100%;
+}
+
+.message-avatar-llm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #374151; /* LLM avatar color (e.g., a distinct gray) */
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.message-avatar-user {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #1D4ED8; /* User avatar color (e.g., a distinct blue) */
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.message-bubble {
+  padding: 10px 15px;
+  border-radius: 15px;
+  background-color: #F3F4F6; /* Default bubble color (light gray for white background) */
+  color: #1F2937; /* Default text color for bubbles (dark gray) */
+  word-wrap: break-word; /* Break long words */
+  overflow-wrap: break-word; /* Ensure content wraps */
+  hyphens: auto;
+}
+
+.message-user .message-bubble {
+  background-color: #DBEAFE; /* User bubble color (light blue) */
+  color: #1E3A8A; /* Darker blue text for user bubble */
+  border-top-right-radius: 5px; /* Tail effect */
+}
+
+.message-llm .message-bubble {
+  background-color: #E5E7EB; /* LLM bubble color (slightly darker gray) */
+  color: #1F2937; /* Dark gray text for LLM bubble */
+  border-top-left-radius: 5px; /* Tail effect */
+}
+
+.message-sender-name {
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #6B7280; /* Medium gray for sender name */
+}
+
+.message-user .message-sender-name {
+  color: #1E3A8A; /* Darker blue for user sender name */
+  text-align: right;
+}
+
+.message-llm .message-sender-name {
+  color: #374151; /* Darker gray for LLM sender name */
+  text-align: left;
+}
+
+.message-content {
+  font-size: 1em;
+  white-space: pre-wrap; /* Preserve whitespace and newlines */
+}
+
+.message-timestamp {
+  font-size: 0.7em;
+  color: #6B7280; /* Medium gray for timestamp */
+  margin-top: 8px;
+  text-align: right;
+}
+
+.message-user .message-timestamp {
+  color: #93C5F0; /* Lighter blue for user timestamp */
+}
+
+.message-llm .message-timestamp {
+  color: #9CA3AF; /* Lighter gray for LLM timestamp */
+}
+
+.message-loading .message-content,
+.message-error-bubble {
+  font-style: italic;
+  color: #4B5563; /* Darker gray for loading/error text */
+}
+
+.message-error-bubble {
+  background-color: #FECACA; /* Light red for error bubble */
+  color: #B91C1C; /* Dark red for error text */
+  padding: 10px 15px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.message-llm .message-content.is-typing::after {
+  content: ' ';
+  animation: blink 1s step-end infinite;
+  margin-left: 1px; /* Adjust as needed */
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.prompt-input-wrapper {
+  padding: 10px 20px; /* Add some padding around the input area */
+  background-color: #FFFFFF; /* Match page content BG - Changed to white */
+  border-top: 1px solid #D1D5DB; /* Subtle separator - Changed to lighter grey */
+}
+
+/* Ensure ChartRenderer.css is either removed or its conflicting styles are handled if it's re-introduced */

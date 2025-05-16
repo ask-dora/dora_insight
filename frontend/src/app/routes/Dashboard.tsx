@@ -1,18 +1,15 @@
-import Navbar from "../../components/Navbar";
-import PromptInput from "../../components/PromptInput";
-import ChartRenderer from "../../components/ChartRenderer";
-import '../../css/Dashboard.css'; // Adjusted path
+// filepath: c:\dev-projects\dora_insight\frontend\src\app\routes\Dashboard.tsx
+import React from 'react';
+import '../../css/Dashboard.css';
 
-export default function Dashboard() {
+const Dashboard: React.FC = () => {
   return (
-    <div className="dashboard-container">
-      <Navbar />
-      <main className="dashboard-main">
-        <ChartRenderer />
-      </main>
-      <div className="prompt-input-wrapper"> {/* Wrapper for PromptInput */}
-        <PromptInput />
-      </div>
+    <div className="new-dashboard-container">
+      {/* <h1>Saved Charts Dashboard</h1> */}
+      <p>This is where the dashboard will be.</p>
+      {/* Placeholder for dashboard content */}
     </div>
   );
-}
+};
+
+export default Dashboard;

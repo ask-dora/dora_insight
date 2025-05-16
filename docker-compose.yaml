@@ -1,0 +1,44 @@
+# filepath: c:\dev-projects\dora_insight\docker-compose.yaml
+version: '3.8'
+
+services:
+  db:
+    image: pgvector/pgvector:pg16 # Using PostgreSQL 16 with pgvector
+    container_name: dora_postgres_pgvector
+    environment:
+      POSTGRES_USER: dorauser
+      POSTGRES_PASSWORD: dorapassword
+      POSTGRES_DB: doradb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432" # Exposing on 5433 to avoid conflict if local 5432 is used
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dorauser -d doradb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dora_fastapi_backend
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env # Loads variables from .env file at the project root (c:\\dev-projects\\dora_insight\\.env)
+    environment:
+      # GEMINI_API_KEY is now loaded from the .env file via the env_file directive above.
+      DATABASE_URL: "postgresql+asyncpg://dorauser:dorapassword@db:5432/doradb"
+      # PYTHONUNBUFFERED: 1 # For seeing logs immediately (can be uncommented if needed)
+    restart: unless-stopped
+    # volumes: # Optional: mount code for live reload during development (if uvicorn --reload is used)
+    #   - ./backend/code:/app/code
+
+volumes:
+  postgres_data:

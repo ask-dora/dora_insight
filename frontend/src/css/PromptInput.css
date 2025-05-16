@@ -1,31 +1,44 @@
 /* CSS for PromptInput.tsx */
 
 .prompt-input-container {
-  margin-left: auto; /* Center the container */
-  margin-right: auto; /* Center the container */
-  max-width: 50%; /* Never longer than 50% of the screen */
-  width: 100%; /* Ensure it tries to take up available space up to max-width */
+  margin: 0 auto;
+  min-height: 3.5rem;
+  max-width: 600px;
+  min-width: 600px;
+  width: 100%;
+  align-items: flex-end;
 }
 
 .prompt-input-bar {
   display: flex; /* Align input and button in a row */
   align-items: center; /* Vertically align items in the bar */
-  border: 1px solid #F9FAFB; /* Border color same as icons */
-  border-radius: 0.375rem; /* rounded-md */
+  border: 1px solid #1F1E1F; /* Border color same as icons */
+  border-radius: 0.85rem; /* rounded-md */
   padding-left: 0.5rem; /* Add some padding to the left of the input field */
-  background-color: #1F2937; /* Background color same as page content area */
+  background-color: #F9FAFB; /* Background color same as page content area */
+  box-shadow: 0 3px 3px rgba(50, 50, 50, 0.2); /* Subtle shadow for depth */
 }
+
 
 .prompt-input-field {
   width: 100%;
-  border: none; /* Remove individual border as parent .prompt-input-bar has it */
-  padding: 0.5rem; /* Adjust padding as needed */
-  border-radius: 0; /* Remove individual radius */
+  min-height: 2.5rem;
+  max-height: 8rem;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0;
   box-sizing: border-box;
-  flex-grow: 1; /* Allow input to take available space */
-  outline: none; /* Remove default focus outline */
-  background-color: transparent; /* Inherit from .prompt-input-bar */
-  color: #F9FAFB; /* Text color for input */
+  flex-grow: 1;
+  outline: none;
+  background-color: transparent;
+  color: #1F1E1F;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: none;
+  overflow-y: auto;
+  line-height: 1.5;
+  transition: min-height 0.2s;
+  display: block;
 }
 
 .prompt-input-field::placeholder {
@@ -35,7 +48,7 @@
 .prompt-submit-button {
   margin-top: 0; /* Remove margin-top */
   background-color: transparent; /* Make background transparent */
-  color: #F9FAFB; /* Icon color */
+  color: #1F1E1F; /* Icon color */
   padding: 0.5rem 1rem;
   border-radius: 0; /* Remove individual radius */
   border: none;
@@ -43,9 +56,10 @@
   display: flex; /* For centering icon if needed */
   align-items: center;
   justify-content: center;
+  transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .prompt-submit-button:hover {
-  color: #06b6d4; /* Icon highlight color on hover */
+  color: #1E40AF; /* Icon highlight color on hover */
   background-color: transparent; /* Keep background transparent on hover */
 }
