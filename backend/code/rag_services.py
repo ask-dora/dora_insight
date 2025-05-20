@@ -64,15 +64,29 @@ async def get_relevant_context(
 async def generate_llm_response(user_prompt: str, context: str) -> str:
     """Generates a response from Gemini LLM with given prompt and context."""
     try:
-        model = genai.GenerativeModel(GENERATION_MODEL)
+        system_prompt = "Your name is Dora. You are an AI assistant designed to help users understand their data better, often through visualizations and insightful analysis. Be helpful and friendly."
         
-        prompt_with_context = f"Based on the following context:\n---\n{context}\n---\n\nRespond to the user's prompt: {user_prompt}"
-        if not context: # If no context, just use the prompt
-            prompt_with_context = user_prompt
+        # Initialize the model with the system instruction
+        model = genai.GenerativeModel(
+            GENERATION_MODEL,
+            system_instruction=system_prompt
+        )
+        
+        # Construct the prompt for the LLM (without manually adding the system_prompt here)
+        if context:
+            prompt_for_llm = f"""Based on the following context from the current conversation:
+---
+{context}
+---
 
-        # print(f"\n--- Sending to Gemini ---\n{prompt_with_context}\n-------------------------\n") # For debugging
+User's request: {user_prompt}"""
+        else:
+            prompt_for_llm = f"User's request: {user_prompt}"
+
+        # print(f"\n--- System Instruction to Gemini: {system_prompt} ---") # For debugging
+        # print(f"\n--- Sending to Gemini (User Prompt + Context): ---\n{prompt_for_llm}\n-------------------------\n") # For debugging
         
-        response = await model.generate_content_async(prompt_with_context)
+        response = await model.generate_content_async(prompt_for_llm)
         return response.text
     except Exception as e:
         print(f"Error calling Gemini API: {e}")
