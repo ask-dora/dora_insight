@@ -44,11 +44,18 @@
   margin: 0.25rem 0.5rem; /* Some spacing around items */
   white-space: nowrap; /* Prevent text wrapping */
   overflow: hidden; /* Hide text that overflows when collapsing */
+  font-family: 'Roboto', sans-serif; /* ADDED */
+  font-size: 0.9rem; /* ADDED, consistent base size */
+  cursor: pointer; /* ADDED */
+  border: none; /* ADDED, base style */
+  background-color: transparent; /* ADDED, base style */
+  transition: background-color 0.2s ease, color 0.2s ease; /* ADDED, base transition */
+  box-sizing: border-box; /* ADDED */
 }
 
 .nav-item:hover {
   background-color: rgba(255, 255, 255, 0.1); /* Light transparent overlay */
-  transition: color 0.3s ease, background-color 0.3s ease;
+  /* transition: color 0.3s ease, background-color 0.3s ease; */ /* REMOVED - now on .nav-item */
 }
 
 .nav-item.active {
@@ -79,6 +86,7 @@
 .nav-text {
   opacity: 1;
   transition: opacity 0.2s ease-in-out;
+  /* font-family: 'Roboto', sans-serif; */ /* REMOVED - now on .nav-item */
 }
 
 .sidebar.collapsed .nav-text {
@@ -132,6 +140,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'Roboto', sans-serif; /* Ensuring Google Font */
 }
 
 .user-profile-button .dropdown-arrow {
@@ -164,4 +173,117 @@
 .sidebar-logout-item:hover {
   background-color: rgba(31, 41, 55, 0.15); /* Lighter background for hover */
   color: #F9FAFB; /* Highlight color for text on hover */
+  font-family: 'Roboto', sans-serif; /* Ensuring Google Font */
+}
+
+/* New styles for layout and scrolling */
+.sidebar-top-section {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allows this section to take available space, pushing user profile down */
+  overflow-y: hidden; /* Prevents this section itself from scrolling if content is too tall before chat sessions */
+}
+
+.new-chat-button-container {
+  padding: 0 0.5rem; /* Consistent with nav-item margin */
+  margin-bottom: 0.5rem;
+}
+
+.new-chat-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: transparent; /* Base style */
+  color: #D9E2E2;
+  border: none; /* Base style */
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif; /* Base style */
+  font-size: 0.9rem; /* Base style */
+  transition: background-color 0.2s ease, color 0.2s ease; /* Base style */
+  box-sizing: border-box; /* ADDED */
+}
+
+.new-chat-button:hover {
+  background-color: rgba(217, 226, 226, 0.1); /* Light hover */
+  color: #FFFFFF;
+}
+
+.new-chat-button .nav-icon {
+  margin-right: 0.75rem;
+}
+
+.static-nav-section {
+  margin-bottom: 1rem; /* Space before the divider */
+}
+
+.sidebar-divider {
+  border: none;
+  height: 1px;
+  background-color: #374151; /* A subtle line color */
+  margin: 0 1rem 1rem 1rem; /* Horizontal padding and margin below */
+}
+
+.chat-sessions-container {
+  flex-grow: 1; /* Allows this to take remaining space in the top section */
+  overflow-y: auto; /* Enables scrolling for chat sessions list */
+  padding: 0 0.5rem; /* Horizontal padding */
+  margin-bottom: 1rem; /* Space at the bottom of the scrollable area */
+}
+
+.chat-sessions-container .sessions-title {
+  font-size: 0.8rem;
+  color: #9CA3AF; /* Lighter color for the title */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 0.5rem 0.5rem 0.5rem; /* Padding consistent with items */
+  margin-top: 0;
+}
+
+.chat-sessions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.session-item {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0.5rem; /* Slightly less padding than main nav items */
+  color: #D9E2E2;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  margin: 0.1rem 0; /* Minimal vertical margin */
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.2s ease;
+  font-family: 'Roboto', sans-serif; /* Ensuring Google Font */
+  font-size: 0.85rem;
+}
+
+.session-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.session-item .session-icon {
+  font-size: 1rem; /* Slightly smaller icon */
+  min-width: 25px;
+  text-align: center;
+  margin-right: 0.6rem;
+}
+
+.session-item .session-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.loading-sessions, .error-sessions, .no-sessions {
+  padding: 0.5rem 0.5rem;
+  font-size: 0.85rem;
+  color: #9CA3AF;
+  font-family: 'Roboto', sans-serif; /* Ensuring Google Font */
 }

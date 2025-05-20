@@ -7,6 +7,38 @@ import type { User } from 'firebase/auth';
 import { auth } from '../../firebase/firebaseConfig'; // Adjusted path
 import '../../css/Login.css'; // Adjusted path
 
+// Function to ensure user exists in our backend
+const syncUserWithBackend = async (firebaseUser: User) => {
+  if (!firebaseUser || !firebaseUser.uid) {
+    console.error("Firebase user or UID is missing for backend sync.");
+    return;
+  }
+  const userIdentifier = firebaseUser.uid;
+  try {
+    // We can call the endpoint to list sessions. This will implicitly create the user if not present.
+    // Or, you could have a dedicated POST /users/sync endpoint.
+    const response = await fetch(`http://localhost:8000/users/${userIdentifier}/sessions/`, {
+      method: 'GET', // Or POST to a sync endpoint
+      headers: {
+        'X-User-Identifier': userIdentifier,
+        // Potentially include Firebase ID token for backend verification if needed in future
+        // 'Authorization': `Bearer ${await firebaseUser.getIdToken()}`,
+      },
+    });
+    if (!response.ok) {
+      // Handle cases where the backend might return an error even if user creation is attempted
+      const errorData = await response.json().catch(() => (null)); // Catch if error response is not JSON
+      console.error("Failed to sync user with backend", response.status, errorData);
+      // Depending on the error, you might want to inform the user or retry
+    } else {
+      console.log("User synced/verified with backend successfully.");
+      // Optionally, you could fetch user details from your backend here if needed immediately
+    }
+  } catch (error) {
+    console.error("Error syncing user with backend:", error);
+  }
+};
+
 // Google Logo SVG component (remains as previously defined, or can be imported if it's a separate .svg file)
 const GoogleLogo = () => (
     <svg style={{ marginRight: '0.5rem' }} width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,9 +63,13 @@ export default function Login() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user: User | null) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user: User | null) => { // made async
       if (user) {
-        navigate('/dashboard');
+        await syncUserWithBackend(user); // Sync user with backend
+        navigate('/chat'); // Navigate to chat after sync
+      } else {
+        // User is signed out
+        // Potentially clear any stored user identifier here
       }
     });
     return unsubscribe;
@@ -45,6 +81,7 @@ export default function Login() {
     setMessage(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      // syncUserWithBackend will be called by onAuthStateChanged
     } catch (err: any) {
       console.error('Email/password login error', err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-email') {
@@ -61,7 +98,7 @@ export default function Login() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      // Navigation to /dashboard will be handled by onAuthStateChanged
+      // syncUserWithBackend will be called by onAuthStateChanged
     } catch (err: any) {
       console.error('Google sign-in error', err);
       setError(err.message || 'Failed to sign in with Google. Please try again.');
@@ -99,6 +136,7 @@ export default function Login() {
     }
     try {
       await createUserWithEmailAndPassword(auth, newEmail, newPassword);
+      // syncUserWithBackend will be called by onAuthStateChanged
       setIsSignUp(false);
       setNewEmail('');
       setNewPassword('');

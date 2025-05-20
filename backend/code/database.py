@@ -21,5 +21,5 @@ async def init_db():
         # For pgvector, we need to ensure the extension is created in the database.
         # This is idempotent, so it's safe to run every time.
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
-        #await conn.run_sync(Base.metadata.drop_all) # <--- UNCOMMENT THIS LINE TEMPORARILY
+        # await conn.run_sync(Base.metadata.drop_all) # <--- THIS LINE IS NOW COMMENTED OUT
         await conn.run_sync(Base.metadata.create_all)

@@ -1,22 +1,36 @@
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware # <--- Import CORSMiddleware
+from fastapi import FastAPI, Depends, HTTPException, Header # Added Header
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional, Dict, Any
 
 from .database import Base, engine, get_db_session, init_db
-from .models import ChatSession, Message as DBMessage # Renamed to avoid Pydantic model conflict
+from .models import User, ChatSession, Message as DBMessage # Added User
 from .rag_services import generate_embedding, get_relevant_context, generate_llm_response
 
 from pydantic import BaseModel
 from datetime import datetime
 
 # --- Pydantic Schemas ---
+class UserBase(BaseModel):
+    user_identifier: str
+
+class UserCreate(UserBase):
+    pass
+
+class UserRead(UserBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
 class MessageBase(BaseModel):
     content: str
 
 class MessageCreate(MessageBase):
-    session_id: Optional[int] = None # session_id is optional for starting a new chat
+    session_id: Optional[int] = None
+    # user_identifier: str # User identifier will be passed in header
 
 class MessageRead(MessageBase):
     id: int
@@ -28,10 +42,18 @@ class MessageRead(MessageBase):
     class Config:
         orm_mode = True
 
-class ChatSessionRead(BaseModel):
+class ChatSessionBase(BaseModel):
+    title: Optional[str] = None
+
+class ChatSessionCreate(ChatSessionBase):
+    pass # user_id will be handled internally
+
+class ChatSessionRead(ChatSessionBase): # Modified
     id: int
+    user_id: int # Added
     created_at: datetime
     messages: List[MessageRead] = []
+    title: Optional[str] = None # Ensure title is here
 
     class Config:
         orm_mode = True
@@ -69,35 +91,61 @@ async def on_startup():
     # async with engine.begin() as conn:
     #     await conn.run_sync(Base.metadata.create_all)
 
-@app.post("/chat/", response_model=ChatSessionRead, summary="Process a chat message")
+# Helper function to get or create user
+async def get_or_create_user(user_identifier: str, db: AsyncSession) -> User:
+    result = await db.execute(
+        select(User).where(User.user_identifier == user_identifier)
+    )
+    user = result.scalar_one_or_none()
+    if not user:
+        user = User(user_identifier=user_identifier)
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+    return user
+
+@app.post("/chat/", response_model=ChatSessionRead, summary="Process a chat message for a user")
 async def process_chat_message(
     message_in: MessageCreate,
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db_session),
+    x_user_identifier: Optional[str] = Header(None, alias="X-User-Identifier") # Get user_identifier from header
 ):
     """
-    Handles a user\'s chat message.
-    - Creates a new session if session_id is not provided.
-    - Generates embedding for the user\'s prompt.
+    Handles a user's chat message, associated with a user identifier.
+    - Gets or creates the user based on X-User-Identifier header.
+    - Creates a new session for the user if session_id is not provided or if it doesn't belong to the user.
+    - Generates embedding for the user's prompt.
     - Retrieves relevant context from past messages in the session using vector similarity search.
     - Gets a response from the LLM using the prompt and context.
     - Saves user message and LLM response (with embeddings) to the database.
     - Returns the updated chat session with all messages.
     """
-    session: Optional[ChatSession] = None
-    TOP_K_CONTEXT = 3 # Number of relevant messages to fetch for context
+    if not x_user_identifier:
+        raise HTTPException(status_code=400, detail="X-User-Identifier header is required.")
 
-    # 1. Get or Create Chat Session
+    user = await get_or_create_user(x_user_identifier, db)
+    
+    session: Optional[ChatSession] = None
+    TOP_K_CONTEXT = 3
+
+    # 1. Get or Create Chat Session for the User
     if message_in.session_id:
         result = await db.execute(
-            select(ChatSession).where(ChatSession.id == message_in.session_id)
+            select(ChatSession).where(ChatSession.id == message_in.session_id, ChatSession.user_id == user.id)
         )
         session = result.scalar_one_or_none()
         if not session:
-            raise HTTPException(status_code=404, detail=f"Chat session with id {message_in.session_id} not found.")
+            # If session not found for this user, or session_id is for another user, create a new one.
+            # Or, you could raise an error: 
+            # raise HTTPException(status_code=404, detail=f\"Chat session with id {message_in.session_id} not found for user {x_user_identifier}.\")
+            # For now, let's create a new one if ID is provided but not valid for user
+            session = ChatSession(user_id=user.id, title=message_in.content[:50]) # Use first 50 chars of prompt as title
+            db.add(session)
+            await db.flush() # To get session.id
     else:
-        session = ChatSession()
+        session = ChatSession(user_id=user.id, title=message_in.content[:50]) # Use first 50 chars of prompt as title
         db.add(session)
-        await db.flush() # To get session.id
+        await db.flush()
 
     # 2. Process User Message
     user_prompt_text = message_in.content
@@ -115,7 +163,7 @@ async def process_chat_message(
     # 3. Retrieve Relevant Context using Vector Similarity Search
     relevant_db_messages: List[DBMessage] = []
     if user_prompt_embedding:
-        # Find messages in the same session, excluding the current one, order by similarity
+        # Context is still session-specific
         context_stmt = (
             select(DBMessage)
             .where(DBMessage.session_id == session.id)
@@ -149,10 +197,16 @@ async def process_chat_message(
     
     # 5. Commit session and messages
     await db.commit()
-    await db.refresh(session) # Refresh to get all messages including the new ones with their IDs
+    await db.refresh(session) 
+    
+    # Ensure title is part of the response if it was set
+    if not session.title and message_in.content:
+        session.title = message_in.content[:50] # Fallback title if somehow missed
+        db.add(session) # Add to session if it was just created
+        await db.commit()
+        await db.refresh(session)
 
-    # Re-fetch the session with all its messages for the response
-    # This ensures that the relationships are loaded correctly after commit.
+
     final_session_result = await db.execute(
         select(ChatSession).where(ChatSession.id == session.id)
     )
@@ -161,20 +215,41 @@ async def process_chat_message(
     return final_session
 
 
-@app.get("/sessions/{session_id}", response_model=ChatSessionRead, summary="Get a specific chat session")
-async def get_chat_session(session_id: int, db: AsyncSession = Depends(get_db_session)):
+@app.get("/users/{user_identifier}/sessions/", response_model=List[ChatSessionRead], summary="List all chat sessions for a specific user")
+async def list_user_chat_sessions(user_identifier: str, skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db_session)):
+    user = await get_or_create_user(user_identifier, db) # Ensures user exists
     result = await db.execute(
-        select(ChatSession).where(ChatSession.id == session_id)
+        select(ChatSession)
+        .where(ChatSession.user_id == user.id)
+        .order_by(ChatSession.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    )
+    sessions = result.scalars().all()
+    if not sessions:
+        return [] # Return empty list if no sessions, instead of 404
+    return sessions
+
+@app.get("/sessions/{session_id}", response_model=ChatSessionRead, summary="Get a specific chat session for a user")
+async def get_chat_session(
+    session_id: int, 
+    db: AsyncSession = Depends(get_db_session),
+    x_user_identifier: Optional[str] = Header(None, alias="X-User-Identifier")
+):
+    if not x_user_identifier:
+        raise HTTPException(status_code=400, detail="X-User-Identifier header is required.")
+    
+    user = await get_or_create_user(x_user_identifier, db)
+
+    result = await db.execute(
+        select(ChatSession).where(ChatSession.id == session_id, ChatSession.user_id == user.id)
     )
     session = result.scalar_one_or_none()
     if not session:
-        raise HTTPException(status_code=404, detail="Chat session not found")
+        raise HTTPException(status_code=404, detail=f"Chat session not found for user {x_user_identifier}")
     return session
 
-@app.get("/sessions/", response_model=List[ChatSessionRead], summary="List all chat sessions")
-async def list_chat_sessions(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_db_session)):
-    result = await db.execute(
-        select(ChatSession).order_by(ChatSession.created_at.desc()).offset(skip).limit(limit)
-    )
-    sessions = result.scalars().all()
-    return sessions
+# Remove or update the old generic /sessions/ endpoint if it's no longer needed
+# For now, I'll comment it out to avoid conflict.
+# @app.get(\"/sessions/\", response_model=List[ChatSessionRead], summary=\"List all chat sessions\")
+# async def list_chat_sessions(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_db_session)):\n#     result = await db.execute(\n#         select(ChatSession).order_by(ChatSession.created_at.desc()).offset(skip).limit(limit)\n#     )\n#     sessions = result.scalars().all()\n#     return sessions
