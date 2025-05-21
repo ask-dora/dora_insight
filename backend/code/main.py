@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Header # Added Header
+from fastapi import FastAPI, Depends, HTTPException, Header, APIRouter # MODIFIED: Added APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -60,6 +60,7 @@ class ChatSessionRead(ChatSessionBase): # Modified
 
 # --- FastAPI App ---
 app = FastAPI(title="Dora Insight RAG Backend")
+router = APIRouter(prefix="/api") # ADDED: Create an APIRouter with /api prefix
 
 # CORS Middleware Configuration
 # origins that are allowed to make cross-origin requests.
@@ -104,7 +105,8 @@ async def get_or_create_user(user_identifier: str, db: AsyncSession) -> User:
         await db.refresh(user)
     return user
 
-@app.post("/chat/", response_model=ChatSessionRead, summary="Process a chat message for a user")
+# @app.post("/chat/", response_model=ChatSessionRead, summary="Process a chat message for a user") # CHANGED to router
+@router.post("/chat/", response_model=ChatSessionRead, summary="Process a chat message for a user")
 async def process_chat_message(
     message_in: MessageCreate,
     db: AsyncSession = Depends(get_db_session),
@@ -215,7 +217,8 @@ async def process_chat_message(
     return final_session
 
 
-@app.get("/users/{user_identifier}/sessions/", response_model=List[ChatSessionRead], summary="List all chat sessions for a specific user")
+# @app.get("/users/{user_identifier}/sessions/", response_model=List[ChatSessionRead], summary="List all chat sessions for a specific user") # CHANGED to router
+@router.get("/users/{user_identifier}/sessions/", response_model=List[ChatSessionRead], summary="List all chat sessions for a specific user")
 async def list_user_chat_sessions(user_identifier: str, skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db_session)):
     user = await get_or_create_user(user_identifier, db) # Ensures user exists
     result = await db.execute(
@@ -230,7 +233,8 @@ async def list_user_chat_sessions(user_identifier: str, skip: int = 0, limit: in
         return [] # Return empty list if no sessions, instead of 404
     return sessions
 
-@app.get("/sessions/{session_id}", response_model=ChatSessionRead, summary="Get a specific chat session for a user")
+# @app.get("/sessions/{session_id}", response_model=ChatSessionRead, summary="Get a specific chat session for a user") # CHANGED to router
+@router.get("/sessions/{session_id}", response_model=ChatSessionRead, summary="Get a specific chat session for a user")
 async def get_chat_session(
     session_id: int, 
     db: AsyncSession = Depends(get_db_session),
@@ -253,3 +257,5 @@ async def get_chat_session(
 # For now, I'll comment it out to avoid conflict.
 # @app.get(\"/sessions/\", response_model=List[ChatSessionRead], summary=\"List all chat sessions\")
 # async def list_chat_sessions(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_db_session)):\n#     result = await db.execute(\n#         select(ChatSession).order_by(ChatSession.created_at.desc()).offset(skip).limit(limit)\n#     )\n#     sessions = result.scalars().all()\n#     return sessions
+
+app.include_router(router) # ADDED: Include the router in the main app

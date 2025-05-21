@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import PromptInput from "../../components/PromptInput";
 import '../../css/Chat.css';
 import { auth } from '../../firebase/firebaseConfig';
+import ReactMarkdown from 'react-markdown';
 
 // Define a type for individual messages
 interface Message {
@@ -153,13 +154,15 @@ export default function Chat({ currentSessionId, setCurrentSessionId, setRefresh
     };
     setMessages(prevMessages => [...prevMessages, optimisticUserMessage]);
 
+    const apiUrl = import.meta.env.VITE_API_BASE_URL; // ADDED
+
     try {
       const headers: HeadersInit = { 'Content-Type': 'application/json' };
       if (currentUserUid) {
         headers['X-User-Identifier'] = currentUserUid;
       }
 
-      const response = await fetch('http://localhost:8000/chat/', {
+      const response = await fetch(`${apiUrl}/chat/`, { // MODIFIED
         method: 'POST',
         headers: headers, // Use updated headers
         body: JSON.stringify({ 
@@ -227,6 +230,7 @@ export default function Chat({ currentSessionId, setCurrentSessionId, setRefresh
     }
     setIsLoading(true);
     setError(null);
+    const apiUrl = import.meta.env.VITE_API_BASE_URL; // ADDED
     try {
       const headers: HeadersInit = { 'Content-Type': 'application/json' };
       if (currentUserUid) {
@@ -234,7 +238,7 @@ export default function Chat({ currentSessionId, setCurrentSessionId, setRefresh
       }
       // TODO: Construct the correct URL, e.g., /sessions/{sessionId}/messages
       // For now, assuming /sessions/{sessionId} returns the full session with messages
-      const response = await fetch(`http://localhost:8000/sessions/${sessionId}`, { 
+      const response = await fetch(`${apiUrl}/sessions/${sessionId}`, { // MODIFIED
         method: 'GET',
         headers: headers,
       });
@@ -289,7 +293,7 @@ export default function Chat({ currentSessionId, setCurrentSessionId, setRefresh
                 <div
                   className={`message-content ${msg.sender === 'llm' && typingMessageId === msg.id ? 'is-typing' : ''}`}
                 >
-                  {msg.content}
+                  {msg.sender === 'llm' ? <ReactMarkdown>{msg.content}</ReactMarkdown> : msg.content}
                 </div>
                 <div className="message-timestamp">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
               </div>

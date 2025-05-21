@@ -14,10 +14,12 @@ const syncUserWithBackend = async (firebaseUser: User) => {
     return;
   }
   const userIdentifier = firebaseUser.uid;
+  const apiUrl = import.meta.env.VITE_API_BASE_URL; // ADDED
+
   try {
     // We can call the endpoint to list sessions. This will implicitly create the user if not present.
     // Or, you could have a dedicated POST /users/sync endpoint.
-    const response = await fetch(`http://localhost:8000/users/${userIdentifier}/sessions/`, {
+    const response = await fetch(`${apiUrl}/users/${userIdentifier}/sessions/`, { // MODIFIED
       method: 'GET', // Or POST to a sync endpoint
       headers: {
         'X-User-Identifier': userIdentifier,

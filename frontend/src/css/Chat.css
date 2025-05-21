@@ -24,13 +24,12 @@
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Space between messages */
 }
 
 .message-row {
   display: flex;
   align-items: flex-end; /* Align avatar and bubble nicely */
-  max-width: 75%; /* Prevent messages from taking full width */
+  max-width: 50%; /* Prevent messages from taking full width */
 }
 
 .message-user {
@@ -67,7 +66,7 @@
 }
 
 .message-bubble {
-  padding: 10px 15px;
+  padding: 15px 15px;
   border-radius: 15px;
   background-color: #F3F4F6; /* Default bubble color (light gray for white background) */
   color: #1F2937; /* Default text color for bubbles (dark gray) */

@@ -44,8 +44,9 @@ const Sidebar: React.FC<SidebarProps> = ({ setCurrentSessionId, refreshSessionsT
   const fetchChatSessions = async (uid: string) => {
     setIsLoadingSessions(true);
     setErrorSessions(null);
+    const apiUrl = import.meta.env.VITE_API_BASE_URL; // ADDED
     try {
-      const response = await fetch(`http://localhost:8000/users/${uid}/sessions/`, {
+      const response = await fetch(`${apiUrl}/users/${uid}/sessions/`, { // MODIFIED
         method: 'GET',
         headers: {
           'X-User-Identifier': uid,
