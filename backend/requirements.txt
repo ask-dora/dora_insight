@@ -1,9 +1,15 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
+psycopg2-binary
 python-dotenv
+pgvector
 google-generativeai>=0.3.0
 numpy
 asyncpg
 psycopg2-binary
-pgvector
+mcp[cli]
+httpx
+cryptography
+python-jose[cryptography]
+pydantic-settings

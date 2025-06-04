@@ -23,3 +23,10 @@ async def init_db():
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
         # await conn.run_sync(Base.metadata.drop_all) # <--- THIS LINE IS NOW COMMENTED OUT
         await conn.run_sync(Base.metadata.create_all)
+        
+        # Create unique index for user integrations if it doesn't exist
+        await conn.execute(text("""
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_user_integration_unique 
+            ON user_integrations(user_id, integration_type) 
+            WHERE is_active = true
+        """))

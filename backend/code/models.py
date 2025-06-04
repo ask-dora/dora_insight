@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .database import Base
@@ -14,6 +15,8 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     chat_sessions = relationship("ChatSession", back_populates="user")
+    integrations = relationship("UserIntegration", back_populates="user")
+    integrations = relationship("UserIntegration", back_populates="user", cascade="all, delete-orphan")
 
 class ChatSession(Base):
     __tablename__ = "chat_sessions"
@@ -39,3 +42,23 @@ class Message(Base):
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
     session = relationship("ChatSession", back_populates="messages")
+
+class UserIntegration(Base):
+    __tablename__ = "user_integrations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    integration_type = Column(String(50), nullable=False)  # 'github', 'slack', etc.
+    access_token = Column(Text, nullable=True)  # Encrypted OAuth token
+    refresh_token = Column(Text, nullable=True)  # Encrypted refresh token
+    token_expires_at = Column(DateTime(timezone=True), nullable=True)
+    integration_user_id = Column(String, nullable=True)  # GitHub user ID
+    integration_username = Column(String, nullable=True)  # GitHub username    connected_at = Column(DateTime(timezone=True), server_default=func.now())
+    last_synced_at = Column(DateTime(timezone=True), nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+    integration_metadata = Column(JSONB, nullable=True)  # Additional integration-specific data
+
+    user = relationship("User", back_populates="integrations")
+
+    class Config:
+        orm_mode = True
