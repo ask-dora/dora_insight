@@ -95,7 +95,9 @@ async def get_github_data_for_llm(
         
     Returns:
         Dictionary with success status and data or error message
-    """    try:
+    """
+
+    try:
         # Use API endpoint directly since we're in the same backend
         from .integrations.github import github_mcp_handler, GitHubMCPRequest
         from .database import get_db_session
@@ -288,6 +290,7 @@ async def prepare_github_context_for_llm(
 
 async def generate_llm_response(user_prompt: str, context: str, user_identifier: Optional[str] = None) -> str:
     """Generates a response from Gemini LLM with given prompt and context."""
+    
     try:
         system_prompt = """Your name is Dora. You are an AI assistant designed to help users understand their data better, often through visualizations and insightful analysis. Be helpful and friendly.
 
@@ -308,34 +311,34 @@ When referencing conversation history or GitHub data, acknowledge it naturally (
             GENERATION_MODEL,
             system_instruction=system_prompt
         )
-        
-    # Get GitHub context if user_identifier is provided
-    github_context = ""
-    if user_identifier:
-        try:
-            print(f"Preparing GitHub context for user: {user_identifier}")
-            github_context = await prepare_github_context_for_llm(user_identifier, user_prompt)
+            
+        # Get GitHub context if user_identifier is provided
+        github_context = ""
+        if user_identifier:
+            try:
+                print(f"Preparing GitHub context for user: {user_identifier}")
+                github_context = await prepare_github_context_for_llm(user_identifier, user_prompt)
+                if github_context:
+                    print(f"Successfully retrieved GitHub context: {len(github_context)} characters")
+                else:
+                    print("No GitHub context was retrieved (empty result)")
+            except Exception as e:
+                print(f"Error preparing GitHub context: {e}")
+                # Don't fail the whole response if GitHub context fails
+            # Combine contexts
+            combined_context = context
             if github_context:
-                print(f"Successfully retrieved GitHub context: {len(github_context)} characters")
-            else:
-                print("No GitHub context was retrieved (empty result)")
-        except Exception as e:
-            print(f"Error preparing GitHub context: {e}")
-            # Don't fail the whole response if GitHub context fails
-          # Combine contexts
-        combined_context = context
-        if github_context:
+                if combined_context:
+                    combined_context += "\n\n--- AUTHORIZED GITHUB DATA ---\n" + github_context
+                else:
+                    combined_context = github_context
+            
+            # Construct the prompt for the LLM (without manually adding the system_prompt here)
             if combined_context:
-                combined_context += "\n\n--- AUTHORIZED GITHUB DATA ---\n" + github_context
-            else:
-                combined_context = github_context
-        
-        # Construct the prompt for the LLM (without manually adding the system_prompt here)
-        if combined_context:
-            prompt_for_llm = f"""Based on the following authorized context:
----
-{combined_context}
----
+                prompt_for_llm = f"""Based on the following authorized context:
+    ---
+    {combined_context}
+    ---
 
 User's request: {user_prompt}"""
         else:
